@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Makan Oma - UMKM Makanan Tradisional</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Warung Oma</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#about">Tentang Kami</a></li>
+                <li><a href="#products">Produk</a></li>
+                <li><a href="#order">Pesan</a></li>
+                <li><a href="#contact">Kontak</a></li>
+                <li><a href="backend.html" style="background: #e74c3c; padding: 8px 15px; border-radius: 5px;">🔐 Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Selamat Datang di Warung Makan Oma</h2>
+            <p>Menyajikan makanan tradisional Indonesia dengan cita rasa autentik dan harga terjangkau</p>
+            <a href="#products" class="btn-primary">Lihat Menu</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Tentang Kami</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Warung Makan Oma</h3>
+                    <p>Warung Makan Oma adalah usaha keluarga yang telah berdiri sejak tahun 2015. Kami mengkhususkan diri dalam menyajikan makanan tradisional Indonesia dengan resep turun temurun yang telah terjaga kualitasnya. Berlokasi di Manggarai Barat, Nusa Tenggara Timur, kami melayani dengan sepenuh hati.</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>📍 Alamat</h4>
+                            <p>Jalan Kuwus-Golowelu, Nantal<br>Kabupaten Manggarai Barat<br>Nusa Tenggara Timur</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>📞 Kontak</h4>
+                            <p>WhatsApp: 085339204829<br>Telepon: (0385) 123456</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>🕒 Jam Operasional</h4>
+                            <p>Senin - Minggu: 07.00 - 21.00 WITA<br>Tutup pada hari libur nasional</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2>Daftar Produk</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&h=200&fit=crop" alt="Nasi Jagung">
+                    </div>
+                    <div class="product-info">
+                        <h3>Nasi Jagung Manggarai</h3>
+                        <p class="price">Rp 15.000</p>
+                        <p class="description">Nasi jagung khas Manggarai dengan lauk ikan asin, sayur, dan sambal lu'at yang pedas.</p>
+                        <button class="btn-order" onclick="selectProduct('Nasi Jagung Manggarai', 15000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop" alt="Ja'i Wuut">
+                    </div>
+                    <div class="product-info">
+                        <h3>Ja'i Wuut (Daging Babi)</h3>
+                        <p class="price">Rp 35.000</p>
+                        <p class="description">Daging babi khas Manggarai yang dimasak dengan bumbu tradisional, gurih dan lezat.</p>
+                        <button class="btn-order" onclick="selectProduct('Ja\'i Wuut (Daging Babi)', 35000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop" alt="Ikan Bakar">
+                    </div>
+                    <div class="product-info">
+                        <h3>Ikan Bakar Sambal Lu'at</h3>
+                        <p class="price">Rp 30.000</p>
+                        <p class="description">Ikan segar dibakar dengan sambal lu'at khas Manggarai yang pedas dan nikmat.</p>
+                        <button class="btn-order" onclick="selectProduct('Ikan Bakar Sambal Lu\'at', 30000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=300&h=200&fit=crop" alt="Ayam Taliwang">
+                    </div>
+                    <div class="product-info">
+                        <h3>Ayam Taliwang NTT</h3>
+                        <p class="price">Rp 28.000</p>
+                        <p class="description">Ayam bakar khas NTT dengan bumbu pedas dan gurih, disajikan dengan plecing kangkung.</p>
+                        <button class="btn-order" onclick="selectProduct('Ayam Taliwang NTT', 28000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop" alt="Rumpu Rampe">
+                    </div>
+                    <div class="product-info">
+                        <h3>Rumpu Rampe</h3>
+                        <p class="price">Rp 20.000</p>
+                        <p class="description">Sayur campur khas Manggarai dengan berbagai jenis sayuran segar dan bumbu tradisional.</p>
+                        <button class="btn-order" onclick="selectProduct('Rumpu Rampe', 20000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=200&fit=crop" alt="Kopi Flores">
+                    </div>
+                    <div class="product-info">
+                        <h3>Kopi Flores Panas</h3>
+                        <p class="price">Rp 8.000</p>
+                        <p class="description">Kopi asli Flores dengan aroma khas dan rasa yang nikmat, disajikan panas.</p>
+                        <button class="btn-order" onclick="selectProduct('Kopi Flores Panas', 8000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=300&h=200&fit=crop" alt="Kopi Hitam Warkop">
+                    </div>
+                    <div class="product-info">
+                        <h3>Kopi Hitam Warkop</h3>
+                        <p class="price">Rp 2.000</p>
+                        <p class="description">Kopi hitam sederhana ala warkop, pas untuk menemani pagi atau sore hari.</p>
+                        <button class="btn-order" onclick="selectProduct('Kopi Hitam Warkop', 2000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1607532941433-304659e8198a?w=300&h=200&fit=crop" alt="Nasi Bungkus">
+                    </div>
+                    <div class="product-info">
+                        <h3>Nasi Bungkus Warkop</h3>
+                        <p class="price">Rp 5.000</p>
+                        <p class="description">Nasi bungkus lengkap dengan lauk sederhana, praktis dan mengenyangkan.</p>
+                        <button class="btn-order" onclick="selectProduct('Nasi Bungkus Warkop', 5000)">Pesan Sekarang</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Section -->
+    <section id="order" class="order">
+        <div class="container">
+            <h2>Form Pemesanan</h2>
+            <form id="orderForm" class="order-form">
+                <div class="form-group">
+                    <label for="customerName">Nama Pelanggan *</label>
+                    <input type="text" id="customerName" name="customerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="selectedProduct">Produk yang Dipesan *</label>
+                    <select id="selectedProduct" name="selectedProduct" required>
+                        <option value="">Pilih Produk</option>
+                        <option value="Nasi Jagung Manggarai">Nasi Jagung Manggarai - Rp 15.000</option>
+                        <option value="Ja'i Wuut (Daging Babi)">Ja'i Wuut (Daging Babi) - Rp 35.000</option>
+                        <option value="Ikan Bakar Sambal Lu'at">Ikan Bakar Sambal Lu'at - Rp 30.000</option>
+                        <option value="Ayam Taliwang NTT">Ayam Taliwang NTT - Rp 28.000</option>
+                        <option value="Rumpu Rampe">Rumpu Rampe - Rp 20.000</option>
+                        <option value="Kopi Flores Panas">Kopi Flores Panas - Rp 8.000</option>
+                        <option value="Kopi Hitam Warkop">Kopi Hitam Warkop - Rp 2.000</option>
+                        <option value="Nasi Bungkus Warkop">Nasi Bungkus Warkop - Rp 5.000</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Jumlah Pesanan *</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryAddress">Alamat Pengiriman *</label>
+                    <textarea id="deliveryAddress" name="deliveryAddress" rows="4" required placeholder="Masukkan alamat lengkap untuk pengiriman"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Kirim Pesanan</button>
+            </form>
+
+            <div id="orderSuccess" class="success-message" style="display: none;">
+                <h3>✅ Pesanan Berhasil Dikirim!</h3>
+                <p>Terima kasih atas pesanan Anda. Kami akan segera menghubungi Anda untuk konfirmasi.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Hubungi Kami</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>📱 WhatsApp</h3>
+                    <p>085339204829</p>
+                    <a href="https://wa.me/6285339204829" class="btn-whatsapp">Chat WhatsApp</a>
+                </div>
+                <div class="contact-item">
+                    <h3>📞 Telepon</h3>
+                    <p>(022) 1234567</p>
+                </div>
+                <div class="contact-item">
+                    <h3>📍 Alamat</h3>
+                    <p>Jalan Kuwus-Golowelu, Nantal<br>Kabupaten Manggarai Barat<br>Nusa Tenggara Timur</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Warung Makan Oma. Semua hak dilindungi.</p>
+            <p style="margin-top: 10px;">
+                <a href="backend.html" style="color: #e74c3c; text-decoration: none; font-weight: bold;">🔐 Login Admin</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

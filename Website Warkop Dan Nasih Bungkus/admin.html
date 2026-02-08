@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Warung Oma</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Login Admin</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <div id="loginError" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <h1>Admin Panel - Warung Oma</h1>
+                <div class="header-actions">
+                    <a href="index.html" style="color: white; text-decoration: none; margin-right: 15px; padding: 8px 15px; background: #3498db; border-radius: 5px;">🏠 Website</a>
+                    <span id="adminUsername"></span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+                <li><a href="#orders" class="nav-link" onclick="showSection('orders')">Pesanan</a></li>
+                <li><a href="#products" class="nav-link" onclick="showSection('products')">Produk</a></li>
+                <li><a href="#reports" class="nav-link" onclick="showSection('reports')">Laporan</a></li>
+                <li><a href="#settings" class="nav-link" onclick="showSection('settings')">Pengaturan</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Pesanan</h3>
+                        <p class="stat-number" id="totalOrders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pesanan Hari Ini</h3>
+                        <p class="stat-number" id="todayOrders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Pendapatan</h3>
+                        <p class="stat-number" id="totalRevenue">Rp 0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pesanan Pending</h3>
+                        <p class="stat-number" id="pendingOrders">0</p>
+                    </div>
+                </div>
+
+                <div class="recent-orders">
+                    <h3>Pesanan Terbaru</h3>
+                    <div class="table-container">
+                        <table id="recentOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pelanggan</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders-section" class="admin-section">
+                <h2>Manajemen Pesanan</h2>
+                <div class="section-controls">
+                    <select id="orderStatusFilter" onchange="loadOrders()">
+                        <option value="">Semua Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Dikonfirmasi</option>
+                        <option value="preparing">Diproses</option>
+                        <option value="ready">Siap</option>
+                        <option value="delivered">Dikirim</option>
+                        <option value="cancelled">Dibatalkan</option>
+                    </select>
+                    <button onclick="loadOrders()" class="btn-secondary">Refresh</button>
+                </div>
+                <div class="table-container">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pelanggan</th>
+                                <th>Telepon</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products-section" class="admin-section">
+                <h2>Manajemen Produk</h2>
+                <div class="section-controls">
+                    <button onclick="showAddProductForm()" class="btn-primary">Tambah Produk</button>
+                </div>
+                <div class="table-container">
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama</th>
+                                <th>Harga</th>
+                                <th>Kategori</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="admin-section">
+                <h2>Laporan</h2>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Laporan Penjualan</h3>
+                        <div class="report-controls">
+                            <input type="date" id="startDate">
+                            <input type="date" id="endDate">
+                            <select id="reportPeriod">
+                                <option value="daily">Harian</option>
+                                <option value="weekly">Mingguan</option>
+                                <option value="monthly">Bulanan</option>
+                            </select>
+                            <button onclick="generateSalesReport()" class="btn-primary">Generate</button>
+                        </div>
+                        <div id="salesReportContent"></div>
+                    </div>
+                    <div class="report-card">
+                        <h3>Produk Terpopuler</h3>
+                        <button onclick="generateProductReport()" class="btn-primary">Generate</button>
+                        <div id="productReportContent"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="admin-section">
+                <h2>Pengaturan</h2>
+                <form id="settingsForm">
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label for="businessName">Nama Usaha:</label>
+                            <input type="text" id="businessName" name="business_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="businessAddress">Alamat:</label>
+                            <textarea id="businessAddress" name="business_address" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessPhone">Telepon:</label>
+                            <input type="text" id="businessPhone" name="business_phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="businessWhatsapp">WhatsApp:</label>
+                            <input type="text" id="businessWhatsapp" name="business_whatsapp">
+                        </div>
+                        <div class="form-group">
+                            <label for="operatingHours">Jam Operasional:</label>
+                            <input type="text" id="operatingHours" name="operating_hours">
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryFee">Biaya Pengiriman:</label>
+                            <input type="number" id="deliveryFee" name="delivery_fee">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Simpan Pengaturan</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2>Detail Pesanan</h2>
+            <div id="orderDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <h2 id="productModalTitle">Tambah Produk</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId" name="id">
+                <div class="form-group">
+                    <label for="productName">Nama Produk:</label>
+                    <input type="text" id="productName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Harga:</label>
+                    <input type="number" id="productPrice" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Deskripsi:</label>
+                    <textarea id="productDescription" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Kategori:</label>
+                    <select id="productCategory" name="category">
+                        <option value="makanan">Makanan</option>
+                        <option value="minuman">Minuman</option>
+                        <option value="snack">Snack</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productImageUrl">URL Gambar:</label>
+                    <input type="url" id="productImageUrl" name="image_url" placeholder="https://example.com/gambar.jpg">
+                    <small style="color: #666; display: block; margin-top: 5px;">Atau upload gambar di bawah</small>
+                </div>
+                <div class="form-group">
+                    <label for="productImageFile">Upload Gambar Produk:</label>
+                    <input type="file" id="productImageFile" name="image_file" accept="image/*">
+                    <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 2MB)</small>
+                    <div id="imagePreview" style="margin-top: 10px; display: none;">
+                        <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 5px; border: 2px solid #ddd;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="productAvailable" name="is_available" checked>
+                        Tersedia
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

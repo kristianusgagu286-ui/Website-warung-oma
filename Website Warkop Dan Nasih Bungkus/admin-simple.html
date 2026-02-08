@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Warung Oma</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Login Modal */
+        #loginModal {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #1976d2;
+            font-size: 14px;
+        }
+
+        /* Admin Dashboard */
+        #adminDashboard {
+            display: none;
+        }
+
+        .admin-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-logout:hover {
+            background: #d35400;
+        }
+
+        .admin-nav {
+            background: #34495e;
+            padding: 0;
+        }
+
+        .admin-nav ul {
+            list-style: none;
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-link {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #e74c3c;
+        }
+
+        .admin-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .welcome-message {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .welcome-message h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .btn-website {
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn-website:hover {
+            background: #2980b9;
+        }
+
+        .btn-add-product {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-add-product:hover {
+            background: #219a52;
+        }
+
+        .products-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            gap: 15px;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image-thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .product-info-item {
+            flex: 1;
+        }
+
+        .product-info-item h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .product-info-item p {
+            color: #666;
+            font-size: 14px;
+            margin: 3px 0;
+        }
+
+        .product-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #e67e22;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #000;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-preparing {
+            background: #e2d9f3;
+            color: #5a3a7a;
+        }
+
+        .status-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        .order-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-id {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .order-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .order-info strong {
+            color: #2c3e50;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .order-status-select {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-view:hover {
+            background: #2980b9;
+        }
+
+        .order-detail-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .order-detail-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .order-detail-section p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .detail-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal">
+        <div class="modal-content">
+            <h2>🔐 Login Admin</h2>
+            
+            <div class="info-box">
+                <p><strong>Username:</strong> admin</p>
+                <p><strong>Password:</strong> admin123</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard">
+        <header class="admin-header">
+            <div class="header-content">
+                <h1>Admin Panel - Warung Oma</h1>
+                <div class="header-actions">
+                    <a href="index.html" class="btn-website">🏠 Website</a>
+                    <span id="adminUsername"></span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">📊 Dashboard</a></li>
+                <li><a href="#orders" class="nav-link" onclick="showSection('orders')">📦 Pesanan</a></li>
+                <li><a href="#products" class="nav-link" onclick="showSection('products')">🍽️ Produk</a></li>
+                <li><a href="#settings" class="nav-link" onclick="showSection('settings')">⚙️ Pengaturan</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            <section id="dashboard-section" class="admin-section active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Pesanan</h3>
+                        <p class="stat-number" id="totalOrders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pesanan Hari Ini</h3>
+                        <p class="stat-number" id="todayOrders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Pendapatan</h3>
+                        <p class="stat-number" id="totalRevenue">Rp 0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pesanan Pending</h3>
+                        <p class="stat-number" id="pendingOrders">0</p>
+                    </div>
+                </div>
+
+                <div class="welcome-message">
+                    <h2>✅ Selamat Datang di Admin Panel!</h2>
+                    <p>Anda berhasil login sebagai administrator <strong id="welcomeUsername"></strong>.</p>
+                    <p>Gunakan menu di atas untuk mengelola pesanan dan produk.</p>
+                    <p style="margin-top: 20px;">
+                        <strong>Fitur yang tersedia:</strong><br>
+                        📊 Dashboard - Lihat statistik dan ringkasan<br>
+                        📦 Pesanan - Kelola pesanan pelanggan<br>
+                        🍽️ Produk - Kelola produk/menu<br>
+                        ⚙️ Pengaturan - Atur informasi website
+                    </p>
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
+                        <p style="color: #2e7d32; margin: 0;">
+                            <strong>💡 Tips:</strong> Produk yang Anda tambahkan akan otomatis muncul di website utama!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="orders-section" class="admin-section">
+                <h2>Manajemen Pesanan</h2>
+                <div style="margin-bottom: 20px;">
+                    <select id="orderStatusFilter" onchange="loadOrders()" style="padding: 10px; border-radius: 5px; border: 2px solid #ddd;">
+                        <option value="">Semua Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Dikonfirmasi</option>
+                        <option value="preparing">Diproses</option>
+                        <option value="ready">Siap</option>
+                        <option value="delivered">Dikirim</option>
+                        <option value="cancelled">Dibatalkan</option>
+                    </select>
+                    <button onclick="loadOrders()" class="btn-add-product" style="margin-left: 10px;">🔄 Refresh</button>
+                </div>
+                
+                <div class="products-container">
+                    <div id="ordersList"></div>
+                </div>
+            </section>
+
+            <section id="products-section" class="admin-section">
+                <h2>Manajemen Produk</h2>
+                <button onclick="showAddProductForm()" class="btn-add-product">+ Tambah Produk</button>
+                
+                <div class="products-container">
+                    <div id="productsList"></div>
+                </div>
+            </section>
+
+            <section id="settings-section" class="admin-section">
+                <h2>Pengaturan Website</h2>
+                <div class="products-container">
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="businessName">Nama Usaha</label>
+                            <input type="text" id="businessName" placeholder="Warung Oma">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessAddress">Alamat Lengkap</label>
+                            <textarea id="businessAddress" rows="3" placeholder="Jalan Kuwus-Golowelu, Nantal..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessPhone">Nomor Telepon</label>
+                            <input type="text" id="businessPhone" placeholder="(0385) 123456">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessWhatsapp">WhatsApp</label>
+                            <input type="text" id="businessWhatsapp" placeholder="085339204829">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="operatingHours">Jam Operasional</label>
+                            <input type="text" id="operatingHours" placeholder="Senin - Minggu: 07.00 - 21.00 WITA">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">💾 Simpan Pengaturan</button>
+                    </form>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                        <h3 style="color: #1976d2; margin-bottom: 10px;">ℹ️ Informasi</h3>
+                        <p style="color: #0d47a1; margin: 5px 0;">Pengaturan ini akan mempengaruhi informasi yang ditampilkan di website utama.</p>
+                        <p style="color: #0d47a1; margin: 5px 0;">Pastikan semua data sudah benar sebelum menyimpan.</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 20px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <h3 style="color: #856404; margin-bottom: 10px;">⚠️ Backup Data</h3>
+                        <p style="color: #856404; margin: 5px 0;">Data disimpan di localStorage browser.</p>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button onclick="exportData()" class="btn-add-product">📥 Export Data</button>
+                            <button onclick="importData()" class="btn-edit">📤 Import Data</button>
+                            <button onclick="clearAllData()" class="btn-delete">🗑️ Hapus Semua Data</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div id="productModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <h2 id="productModalTitle">Tambah Produk</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                
+                <div class="form-group">
+                    <label for="productName">Nama Produk *</label>
+                    <input type="text" id="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productPrice">Harga *</label>
+                    <input type="number" id="productPrice" required min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Deskripsi</label>
+                    <textarea id="productDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productCategory">Kategori</label>
+                    <select id="productCategory">
+                        <option value="makanan">Makanan</option>
+                        <option value="minuman">Minuman</option>
+                        <option value="snack">Snack</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImageFile">Upload Gambar Produk</label>
+                    <input type="file" id="productImageFile" accept="image/*">
+                    <small style="color: #666; display: block; margin-top: 5px;">Format: JPG, PNG, GIF (Max 2MB)</small>
+                    <div id="imagePreview" style="margin-top: 10px; display: none; text-align: center;">
+                        <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 5px; border: 2px solid #ddd;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImageUrl">Atau URL Gambar</label>
+                    <input type="url" id="productImageUrl" placeholder="https://example.com/gambar.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="productAvailable" checked>
+                        Produk Tersedia
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-primary">Simpan Produk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-modal" onclick="closeOrderModal()">&times;</span>
+            <h2>Detail Pesanan</h2>
+            <div id="orderDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            const username = localStorage.getItem('adminUsername');
+            
+            if (token && username) {
+                showDashboard(username);
+                loadStats();
+            } else {
+                showLoginModal();
+            }
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
+        }
+
+        function showDashboard(username) {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('adminUsername').textContent = username;
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (username === 'admin' && password === 'admin123') {
+                // Login successful
+                localStorage.setItem('adminToken', 'admin-token-' + Date.now());
+                localStorage.setItem('adminUsername', username);
+                
+                showDashboard(username);
+                loadStats();
+                
+                // Clear form
+                document.getElementById('loginForm').reset();
+                errorDiv.style.display = 'none';
+            } else {
+                // Login failed
+                errorDiv.textContent = '❌ Username atau password salah!';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUsername');
+                
+                // Redirect ke halaman home website
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
+        function loadStats() {
+            // Load orders from localStorage
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // Calculate stats
+            const totalOrders = orders.length;
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.created_at);
+                const today = new Date();
+                return orderDate.toDateString() === today.toDateString();
+            }).length;
+            
+            const totalRevenue = orders
+                .filter(order => order.status !== 'cancelled')
+                .reduce((sum, order) => sum + (order.total_amount || 0), 0);
+            
+            const pendingOrders = orders.filter(order => order.status === 'pending').length;
+            
+            // Update display
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('todayOrders').textContent = todayOrders;
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Product Management Functions
+        function loadProducts() {
+            const products = getProductsFromStorage();
+            const container = document.getElementById('productsList');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Belum Ada Produk</h3>
+                        <p>Klik tombol "Tambah Produk" untuk menambahkan produk baru</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = products.map(product => `
+                <div class="product-item" data-product-id="${product.id}">
+                    ${product.image_url ? `<img src="${product.image_url}" class="product-image-thumb" alt="${product.name}">` : '<div style="width: 80px; height: 80px; background: #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">📷</div>'}
+                    <div class="product-info-item">
+                        <h3>${product.name}</h3>
+                        <p class="product-price">${formatCurrency(product.price)}</p>
+                        <p>${product.description || '-'}</p>
+                        <span class="status-badge ${product.is_available ? 'status-available' : 'status-unavailable'}">
+                            ${product.is_available ? '✓ Tersedia' : '✗ Tidak Tersedia'}
+                        </span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-edit" data-action="edit" data-id="${product.id}">Edit</button>
+                        <button class="btn-delete" data-action="delete" data-id="${product.id}">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners using event delegation
+            container.addEventListener('click', function(e) {
+                const button = e.target.closest('button[data-action]');
+                if (!button) return;
+                
+                const action = button.dataset.action;
+                const productId = parseInt(button.dataset.id);
+                
+                if (action === 'edit') {
+                    editProduct(productId);
+                } else if (action === 'delete') {
+                    deleteProduct(productId);
+                }
+            });
+        }
+
+        function getProductsFromStorage() {
+            const products = localStorage.getItem('products');
+            if (products) {
+                return JSON.parse(products);
+            }
+            
+            // Default products
+            const defaultProducts = [
+                { id: 1, name: 'Nasi Jagung Manggarai', price: 15000, category: 'makanan', is_available: true, description: 'Nasi jagung khas Manggarai dengan lauk ikan asin dan sambal lu\'at', image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&h=200&fit=crop' },
+                { id: 2, name: 'Ja\'i Wuut (Daging Babi)', price: 35000, category: 'makanan', is_available: true, description: 'Daging babi khas Manggarai dengan bumbu tradisional', image_url: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop' },
+                { id: 3, name: 'Ikan Bakar Sambal Lu\'at', price: 30000, category: 'makanan', is_available: true, description: 'Ikan segar dibakar dengan sambal lu\'at khas Manggarai', image_url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop' },
+                { id: 4, name: 'Ayam Taliwang NTT', price: 28000, category: 'makanan', is_available: true, description: 'Ayam bakar khas NTT dengan bumbu pedas', image_url: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=300&h=200&fit=crop' },
+                { id: 5, name: 'Rumpu Rampe', price: 20000, category: 'makanan', is_available: true, description: 'Sayur campur khas Manggarai dengan bumbu tradisional', image_url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop' },
+                { id: 6, name: 'Kopi Flores Panas', price: 8000, category: 'minuman', is_available: true, description: 'Kopi asli Flores dengan aroma khas', image_url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=200&fit=crop' },
+                { id: 7, name: 'Kopi Hitam Warkop', price: 2000, category: 'minuman', is_available: true, description: 'Kopi hitam sederhana ala warkop', image_url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=300&h=200&fit=crop' },
+                { id: 8, name: 'Nasi Bungkus Warkop', price: 5000, category: 'makanan', is_available: true, description: 'Nasi bungkus lengkap dengan lauk sederhana', image_url: 'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=300&h=200&fit=crop' }
+            ];
+            
+            saveProductsToStorage(defaultProducts);
+            return defaultProducts;
+        }
+
+        function saveProductsToStorage(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        function showAddProductForm() {
+            document.getElementById('productModalTitle').textContent = 'Tambah Produk';
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function editProduct(productId) {
+            console.log('Edit product:', productId);
+            const products = getProductsFromStorage();
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) {
+                alert('Produk tidak ditemukan!');
+                console.error('Product not found:', productId);
+                return;
+            }
+            
+            console.log('Found product:', product);
+            
+            document.getElementById('productModalTitle').textContent = 'Edit Produk';
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productCategory').value = product.category || 'makanan';
+            document.getElementById('productImageUrl').value = product.image_url || '';
+            document.getElementById('productAvailable').checked = product.is_available !== false;
+            
+            if (product.image_url) {
+                document.getElementById('previewImg').src = product.image_url;
+                document.getElementById('imagePreview').style.display = 'block';
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+            
+            document.getElementById('productModal').style.display = 'flex';
+            console.log('Modal opened');
+        }
+
+        function deleteProduct(productId) {
+            console.log('Delete product:', productId);
+            if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                return;
+            }
+            
+            const products = getProductsFromStorage();
+            const filteredProducts = products.filter(p => p.id !== productId);
+            saveProductsToStorage(filteredProducts);
+            
+            alert('✅ Produk berhasil dihapus!');
+            loadProducts();
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        // Image preview handler
+        document.getElementById('productImageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('❌ Ukuran file terlalu besar! Maksimal 2MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('❌ File harus berupa gambar!');
+                    e.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewImg').src = event.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Product form submit
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productId = document.getElementById('productId').value;
+            const imageFile = document.getElementById('productImageFile').files[0];
+            const imageUrl = document.getElementById('productImageUrl').value;
+            
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveProduct(productId, event.target.result);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveProduct(productId, imageUrl);
+            }
+        });
+
+        function saveProduct(productId, imageUrl) {
+            const productData = {
+                name: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                description: document.getElementById('productDescription').value,
+                category: document.getElementById('productCategory').value,
+                image_url: imageUrl,
+                is_available: document.getElementById('productAvailable').checked
+            };
+            
+            const products = getProductsFromStorage();
+            
+            if (productId) {
+                const index = products.findIndex(p => p.id === parseInt(productId));
+                if (index !== -1) {
+                    products[index] = { ...products[index], ...productData, updated_at: new Date().toISOString() };
+                    alert('✅ Produk berhasil diupdate!');
+                }
+            } else {
+                const newProduct = {
+                    id: Date.now(),
+                    ...productData,
+                    created_at: new Date().toISOString()
+                };
+                products.push(newProduct);
+                alert('✅ Produk berhasil ditambahkan!');
+            }
+            
+            saveProductsToStorage(products);
+            loadProducts();
+            closeProductModal();
+        }
+
+        // Load products when products section is shown
+        function showSection(sectionName) {
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionName === 'products') {
+                loadProducts();
+            } else if (sectionName === 'orders') {
+                loadOrders();
+            }
+        }
+
+        // Make functions globally accessible
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
+        window.showAddProductForm = showAddProductForm;
+        window.closeProductModal = closeProductModal;
+        window.showSection = showSection;
+        window.logout = logout;
+        window.loadOrders = loadOrders;
+        window.closeOrderModal = closeOrderModal;
+
+        // Orders Management Functions
+        function loadOrders() {
+            const orders = getOrdersFromStorage();
+            const statusFilter = document.getElementById('orderStatusFilter').value;
+            
+            let filteredOrders = orders;
+            if (statusFilter) {
+                filteredOrders = orders.filter(order => order.status === statusFilter);
+            }
+            
+            const container = document.getElementById('ordersList');
+            
+            if (filteredOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Belum Ada Pesanan</h3>
+                        <p>Pesanan dari pelanggan akan muncul di sini</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredOrders.reverse().map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <span class="order-id">Pesanan #${order.id}</span>
+                        <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div class="order-body">
+                        <div class="order-info">
+                            <strong>Pelanggan:</strong> ${order.customer_name}
+                        </div>
+                        <div class="order-info">
+                            <strong>Produk:</strong> ${order.product_name}
+                        </div>
+                        <div class="order-info">
+                            <strong>Jumlah:</strong> ${order.quantity} porsi
+                        </div>
+                        <div class="order-info">
+                            <strong>Total:</strong> ${formatCurrency(order.total_amount || 0)}
+                        </div>
+                    </div>
+                    <div class="order-footer">
+                        <select class="order-status-select" data-order-id="${order.id}" onchange="updateOrderStatus(${order.id}, this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Dikonfirmasi</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Diproses</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Siap</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Dikirim</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Dibatalkan</option>
+                        </select>
+                        <div>
+                            <button class="btn-view" onclick="showOrderDetail(${order.id})">Detail</button>
+                            <button class="btn-delete" onclick="deleteOrder(${order.id})" style="margin-left: 5px;">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getOrdersFromStorage() {
+            const orders = localStorage.getItem('orders');
+            return orders ? JSON.parse(orders) : [];
+        }
+
+        function saveOrdersToStorage(orders) {
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'confirmed': 'Dikonfirmasi',
+                'preparing': 'Diproses',
+                'ready': 'Siap',
+                'delivered': 'Dikirim',
+                'cancelled': 'Dibatalkan'
+            };
+            return statusMap[status] || status;
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const orders = getOrdersFromStorage();
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                orders[orderIndex].updated_at = new Date().toISOString();
+                saveOrdersToStorage(orders);
+                
+                alert('✅ Status pesanan berhasil diupdate!');
+                loadStats();
+            }
+        }
+
+        function showOrderDetail(orderId) {
+            const orders = getOrdersFromStorage();
+            const order = orders.find(o => o.id === orderId);
+            
+            if (!order) {
+                alert('Pesanan tidak ditemukan!');
+                return;
+            }
+            
+            const content = document.getElementById('orderDetailContent');
+            content.innerHTML = `
+                <div class="order-detail-section">
+                    <h3>Informasi Pesanan</h3>
+                    <p><strong>ID Pesanan:</strong> #${order.id}</p>
+                    <p><strong>Tanggal:</strong> ${formatDateTime(order.created_at)}</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></p>
+                </div>
+                
+                <div class="order-detail-section">
+                    <h3>Informasi Pelanggan</h3>
+                    <p><strong>Nama:</strong> ${order.customer_name}</p>
+                    <p><strong>Alamat:</strong> ${order.delivery_address}</p>
+                </div>
+                
+                <div class="order-detail-section">
+                    <h3>Detail Produk</h3>
+                    <p><strong>Produk:</strong> ${order.product_name}</p>
+                    <p><strong>Jumlah:</strong> ${order.quantity} porsi</p>
+                </div>
+                
+                <div class="total-amount">
+                    Total: ${formatCurrency(order.total_amount || 0)}
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="closeOrderModal()" class="btn-primary">Tutup</button>
+                </div>
+            `;
+            
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        function deleteOrder(orderId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+                return;
+            }
+            
+            const orders = getOrdersFromStorage();
+            const filteredOrders = orders.filter(o => o.id !== orderId);
+            saveOrdersToStorage(filteredOrders);
+            
+            alert('✅ Pesanan berhasil dihapus!');
+            loadOrders();
+            loadStats();
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Settings Management
+        function loadSettings() {
+            const settings = getSettingsFromStorage();
+            
+            document.getElementById('businessName').value = settings.business_name || 'Warung Oma';
+            document.getElementById('businessAddress').value = settings.business_address || 'Jalan Kuwus-Golowelu, Nantal, Kabupaten Manggarai Barat, Nusa Tenggara Timur';
+            document.getElementById('businessPhone').value = settings.business_phone || '(0385) 123456';
+            document.getElementById('businessWhatsapp').value = settings.business_whatsapp || '085339204829';
+            document.getElementById('operatingHours').value = settings.operating_hours || 'Senin - Minggu: 07.00 - 21.00 WITA';
+        }
+
+        function getSettingsFromStorage() {
+            const settings = localStorage.getItem('settings');
+            if (settings) {
+                return JSON.parse(settings);
+            }
+            
+            return {
+                business_name: 'Warung Oma',
+                business_address: 'Jalan Kuwus-Golowelu, Nantal, Kabupaten Manggarai Barat, Nusa Tenggara Timur',
+                business_phone: '(0385) 123456',
+                business_whatsapp: '085339204829',
+                operating_hours: 'Senin - Minggu: 07.00 - 21.00 WITA'
+            };
+        }
+
+        function saveSettingsToStorage(settings) {
+            localStorage.setItem('settings', JSON.stringify(settings));
+        }
+
+        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const settings = {
+                business_name: document.getElementById('businessName').value,
+                business_address: document.getElementById('businessAddress').value,
+                business_phone: document.getElementById('businessPhone').value,
+                business_whatsapp: document.getElementById('businessWhatsapp').value,
+                operating_hours: document.getElementById('operatingHours').value,
+                updated_at: new Date().toISOString()
+            };
+            
+            saveSettingsToStorage(settings);
+            alert('✅ Pengaturan berhasil disimpan!\n\nRefresh halaman website utama untuk melihat perubahan.');
+        });
+
+        // Data Management Functions
+        function exportData() {
+            const data = {
+                products: getProductsFromStorage(),
+                orders: getOrdersFromStorage(),
+                settings: getSettingsFromStorage(),
+                exported_at: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `warung-oma-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            alert('✅ Data berhasil di-export!\n\nFile backup telah didownload.');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        if (confirm('⚠️ Import data akan menimpa data yang ada.\n\nLanjutkan?')) {
+                            if (data.products) localStorage.setItem('products', JSON.stringify(data.products));
+                            if (data.orders) localStorage.setItem('orders', JSON.stringify(data.orders));
+                            if (data.settings) localStorage.setItem('settings', JSON.stringify(data.settings));
+                            
+                            alert('✅ Data berhasil di-import!\n\nHalaman akan di-refresh.');
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert('❌ Error: File tidak valid!\n\n' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ PERINGATAN!\n\nIni akan menghapus SEMUA data:\n- Produk\n- Pesanan\n- Pengaturan\n\nApakah Anda yakin?')) {
+                return;
+            }
+            
+            if (!confirm('⚠️ KONFIRMASI TERAKHIR!\n\nData yang dihapus tidak dapat dikembalikan.\n\nLanjutkan?')) {
+                return;
+            }
+            
+            localStorage.removeItem('products');
+            localStorage.removeItem('orders');
+            localStorage.removeItem('settings');
+            
+            alert('✅ Semua data berhasil dihapus!\n\nHalaman akan di-refresh.');
+            location.reload();
+        }
+
+        // Update showSection to load settings
+        function showSection(sectionName) {
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionName === 'products') {
+                loadProducts();
+            } else if (sectionName === 'orders') {
+                loadOrders();
+            } else if (sectionName === 'settings') {
+                loadSettings();
+            }
+        }
+    </script>
+</body>
+</html>
